@@ -1,0 +1,29 @@
+<html lang="en">
+
+<!-- // // head added using partials  -->
+<%- include('./partials/head.ejs') %>
+
+
+    <body>
+        <!-- // // navbar added using partials  -->
+        <%- include('./partials/nav.ejs') %>
+            <div class="blogs content">
+                <h2>All Blogs</h2>
+                <% blogs && blogs.map((item,index)=>{%>
+                    <h1 class="title">
+                        <%= item.title%>
+                    </h1>
+                    <h2 class="snippet">
+                        <%= item.snippet%>
+                    </h2>
+                    <%})%>
+                        <% if(blogs.length===0){%>
+                            Create new blog
+                            <%}%>
+            </div>
+
+            <!-- // // footer added using partials  -->
+            <%- include('./partials/footer.ejs') %>
+    </body>
+
+</html>
