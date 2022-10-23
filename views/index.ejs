@@ -10,12 +10,14 @@
             <div class="blogs content">
                 <h2>All Blogs</h2>
                 <% blogs && blogs.map((item,index)=>{%>
-                    <h1 class="title">
-                        <%= item.title%>
-                    </h1>
-                    <h2 class="snippet">
-                        <%= item.snippet%>
-                    </h2>
+                    <a href='/blogs/<%= item._id%>' class="single">
+                        <h1 class="title">
+                            <%= item.title%>
+                        </h1>
+                        <h2 class="snippet">
+                            <%= item.snippet%>
+                        </h2>
+                    </a>
                     <%})%>
                         <% if(blogs.length===0){%>
                             Create new blog

@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const mongoose = require('mongoose');
 const app = express();
 const Blog = require('./models/blog');
+const { render } = require('ejs');
 
 // // Connect to mongoDb
 const dbURI = "mongodb+srv://admin:adminASB1@blogworld.zciemfa.mongodb.net/blogworldDB?retryWrites=true&w=majority"
@@ -22,9 +23,7 @@ app.set('view engine', 'ejs');
 
 
 
-app.listen(3000, () => {
-    console.log('Listening to port 3000')
-})
+app.listen(3000)
 
 
 // // // middle aware number1
@@ -48,6 +47,7 @@ app.listen(3000, () => {
 // // instead of creating a middleaware from sratch y not use a thing thats predefined 
 // instead of making function we can use the predefined methods or funtion like in the morgan docs we can use 'tiny','dev'
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 
@@ -97,28 +97,130 @@ app.use(morgan('dev'));
 
 
 
+// app.get('/', (req, res) => {
+//     res.redirect('/blogs');
+// })
+// app.get('/about', (req, res) => {
+//     res.render('about', { title: 'About' })
+// })
+
+// app.get('/blogs', (req, res) => {
+//     Blog.find().sort({ createdAt: -1 })
+//         .then((result) => {
+//             res.render('index', { title: 'All Blogs', blogs: result })
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// })
+
+
+// app.get('/blogs/create', (req, res) => {
+//     res.render('create', { title: 'Create new blog' })
+// })
+
+// app.post('/blogs', (req, res) => {
+//     // console.log(req.body);
+//     const blog = new Blog(req.body);
+  
+//     blog.save()
+//       .then(result => {
+//         res.redirect('/blogs');
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   });
+  
+//   app.get('/blogs/:id', (req, res) => {
+//     const id = req.params.id;
+//     Blog.findById(id)
+//       .then(result => {
+//         res.render('details', { blog: result, title: 'Blog Details' });
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   });
+  
+//   app.delete('/blogs/:id', (req, res) => {
+//     const id = req.params.id;
+    
+//     Blog.findByIdAndDelete(id)
+//       .then(result => {
+//         res.json({ redirect: '/blogs' });
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+//   });
+  
+// // // this is just like a middle aware this will get executed when there is no route which matches with the get requests above 
+// app.use((req, res) => {
+//     res.status(404).render('404', { title: '404' })
+// })
+
+// // Routes
 app.get('/', (req, res) => {
     res.redirect('/blogs');
-})
-app.get('/about', (req, res) => {
-    res.render('about', { title: 'About' })
-})
-
-app.get('/blogs', (req, res) => {
+  });
+  
+  app.get('/about', (req, res) => {
+    res.render('about', { title: 'About' });
+  });
+  
+  // blog routes
+  app.get('/blogs/create', (req, res) => {
+    res.render('create', { title: 'Create a new blog' });
+  });
+  
+  app.get('/blogs', (req, res) => {
     Blog.find().sort({ createdAt: -1 })
-        .then((result) => {
-            res.render('index', { title: 'All Blogs', blogs: result })
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-})
-app.get('/blogs-create', (req, res) => {
-    res.render('create', { title: 'Create new blog' })
-})
-
-
-// // this is just like a middle aware this will get executed when there is no route which matches with the get requests above 
-app.use((req, res) => {
-    res.status(404).render('404', { title: '404' })
-})
+      .then(result => {
+        res.render('index', { blogs: result, title: 'All blogs' });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+  
+  app.post('/blogs', (req, res) => {
+    // console.log(req.body);
+    const blog = new Blog(req.body);
+  
+    blog.save()
+      .then(result => {
+        res.redirect('/blogs');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+  
+  app.get('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+    Blog.findById(id)
+      .then(result => {
+        res.render('details', { blog: result, title: 'Blog Details' });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+  
+  app.delete('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+    
+    Blog.findByIdAndDelete(id)
+      .then(result => {
+        res.json({ redirect: '/blogs' });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+  
+  // 404 page
+  app.use((req, res) => {
+    res.status(404).render('404', { title: '404' });
+  });
